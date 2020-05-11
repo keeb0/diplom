@@ -1,0 +1,12 @@
+.found_user_block{
+	padding: 30px;
+}
+.row{
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding: 10px;
+	border: 1px solid #e6e6e6;
+	background-color: #fff;
+	font-size: 18px;
+}
