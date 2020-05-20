@@ -1,7 +1,7 @@
 .found_user_block{
 	padding: 30px;
 }
-.row{
+.found_user_block .row{
 	color: #000;
 	text-decoration: none;
 	display: block;

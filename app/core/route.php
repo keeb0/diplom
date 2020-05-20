@@ -14,7 +14,6 @@ class Route
 
 		!empty($routes[2]) ? $action_name = $routes[2] : 0;
 
-
 		$model_name = 'Model_'.$controller_name;
 
 		$model_file = 'model-'.strtolower($controller_name).'.php';
@@ -50,7 +49,7 @@ class Route
 			}
 		}
 
-		$controller_name = 'Controller_'.$controller_name;
+		$controller_name = 'Controller'.$controller_name;
 		$action_name = 'action_'.$action_name;
 		
 		$controller = new $controller_name;
@@ -66,7 +65,7 @@ class Route
 	{
 		require_once 'app/controllers/controller-404.php';
 
-		$controller = new Controller_404;
+		$controller = new Controller404;
 		$controller->action_index();
 	}
 

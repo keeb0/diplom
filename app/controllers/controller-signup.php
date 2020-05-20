@@ -1,5 +1,5 @@
 <?php
-class Controller_Sign_Up extends Controller
+class ControllerSignUp extends Controller
 {
 	public function __construct()
 	{
@@ -18,16 +18,17 @@ class Controller_Sign_Up extends Controller
 
 		if(!empty($_POST))
 		{
-			$new_user = new Model_User($_POST);
-			$this->error_message = $new_user->create();
+			$new_user = new ModelUser($_POST);
+			$result = $new_user->create();
 
 			// Успешная регистрация
-			if($this->error_message === 1)
+			if($result === true)
 				$this->go_home();
+			else
+				$this->error_message = $result;
 		}
 
 		$this->setData();
-		
 		$this->view->generate($this->data);
 	}
 }

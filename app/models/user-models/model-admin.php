@@ -1,5 +1,5 @@
 <?php
-class Model_Admin extends Model_User
+class ModelAdmin extends ModelUser
 {
 	
 	

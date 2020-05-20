@@ -1,5 +1,5 @@
 <?php
-class Controller_404 extends Controller
+class Controller404 extends Controller
 {
 	function action_index()
 	{

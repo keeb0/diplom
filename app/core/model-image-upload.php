@@ -1,10 +1,10 @@
 <?php
-class Model_Image extends Model
+class ModelImage extends Model
 {
 	// public $photos_main_path = '/web/user-photos';
 	public $image_type;
 
-	public function upload_image($image_data, $name, $path)
+	public function uploadImage($image_data, $name, $path)
 	{
 		switch ($image_data['type']) {
 			case 'image/png':

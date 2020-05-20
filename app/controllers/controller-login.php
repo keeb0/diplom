@@ -1,5 +1,5 @@
 <?php
-class Controller_Login extends Controller
+class ControllerLogin extends Controller
 {
 	public function __construct()
 	{
@@ -20,13 +20,13 @@ class Controller_Login extends Controller
 			if(!empty($_POST['login'])
 				&& !empty($_POST['pswd']))
 			{
-				$guest = new Model_User($_POST);
-				$successful_query = $guest->verifyPswd();
+				$guest = new ModelUser($_POST);
+				$verifying_query = $guest->verifyPswd();
 
-				if($successful_query['id'] !== false)
+				if($verifying_query !== false)
 					{
-						$_SESSION['user_id'] = $successful_query['id'];
-						$_SESSION['role'] = $successful_query['role'];
+						$_SESSION['user_id'] = $verifying_query['id'];
+						$_SESSION['role'] = $verifying_query['role'];
 						$this->go_home();
 					}
 				else

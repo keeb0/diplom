@@ -20,7 +20,7 @@
 }
 .user_photo_block .icon{
 	width: 25px;
-	margin-left: 10px;
+	margin: 0 5px;
 	float: left;
 }
 .role{
@@ -31,13 +31,13 @@
 	/*text-align: center;*/
 	height: 33px;
 }
-.field{
+.user_data_block .row{
 	margin-top: 20px;
 	text-align:right; 
 	line-height: 35px;
 }
-.pswd_inputs{
-	margin-right: 28px;
+.user_data_block [type="password"]{
+	width: 200px;
 }
 #photo_new{
 	border:1px solid #e6e6e6;
@@ -61,7 +61,4 @@
 }
 #error_message_avatar{
 	width: 300px;
-}
-.error_message{
-	color: red;
 }

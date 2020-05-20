@@ -1,8 +1,13 @@
 <?php
-class Model_User extends Model
+class ModelUser extends Model
 {
 	public $user_id;
 	public $login;
+	public $firstname;
+	public $surname;
+	public $patronymic;
+	public $department;
+	public $faculty;
 	public $email;
 	public $role;
 	public $avatar_name;
@@ -24,9 +29,10 @@ class Model_User extends Model
 	{
 		$stmt = self::$connection->prepare("
 			SELECT login, email, avatar_name, role
-			FROM users 
-			WHERE id = '$this->user_id'
-			");
+			FROM users
+			NATURAL JOIN roles
+			WHERE users.id = '$this->user_id'
+		");
 		$stmt->execute();
 		$result_set = $stmt->get_result();
 		$stmt->close();
@@ -39,60 +45,57 @@ class Model_User extends Model
 	// Запись нового пользователя
 	public function create()
 	{
-		$successful_validate = true;
 		// Указан не корректный id -1 (пользователь еще не создан)
 		$existing_user = $this->getExistingUser(-1);
-		$error_message['login'] = $this->validateLogin($existing_user['login']);
-		$error_message['email'] = $this->validateEmail($existing_user['email']);
-		$error_message['pswd'] = $this->validatePswd();
+		$this->error_message['login'] = $this->validateLogin($existing_user['login']);
+		$this->error_message['email'] = $this->validateEmail($existing_user['email']);
+		$this->error_message['role'] = $this->validateRole();
+		$this->error_message['pswd'] = $this->validatePswd();
 
-		foreach ($error_message as $key => $value) {
-				if(!empty($value))
-				{
-					$successful_validate = 0;
-					break;
-				}
-			}
+		$successful_validate = $this->checkValidates();
 		
 		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
 			$stmt = self::$connection->prepare("
-				INSERT INTO users (id, login, email, password) 
-				VALUES (NULL , ?, ?, ?)
-				");
-			$stmt->bind_param('sss', $this->login, $this->email, $this->pswd_new);
+				INSERT INTO users (id, login, email, roleId, password) 
+				VALUES (NULL , ?, ?, ?, ?)
+			");
+			$stmt->bind_param('ssis', $this->login, $this->email, $this->role, $this->pswd_new);
 			$stmt->execute();
-
 			$_SESSION['user_id'] = self::$connection->insert_id;
+
+			$result = self::$connection->query("
+				SELECT role
+				FROM roles
+				WHERE roleId = '$this->role'
+			");
+			$row = $result->fetch_assoc();
+
+			$_SESSION['role'] = $row['role'];
 			setcookie('checkIn', true, time() + 3);
-			return 1;
+			return true;
 		}
 		else
-			return $error_message;
+			return $this->error_message;
 	}
 
 	// Редактирование данных пользователем
 	public function editData($user_id)
 	{
-		$successful_validate = 1;
-
 		$existing_user = $this->getExistingUser($user_id);
-		$error_message['login'] = $this->validateLogin($existing_user['login']);
-		$error_message['email'] = $this->validateEmail($existing_user['email']);
+		$this->error_message['login'] = $this->validateLogin($existing_user['login']);
+		$this->error_message['email'] = $this->validateEmail($existing_user['email']);
 
-		foreach ($error_message as $key => $value) {
-			if(!empty($value))
-			{
-				$successful_validate = 0;
-				break;
-			}
-		}
+		$successful_validate = $this->checkValidates();
 	
 		if ($successful_validate) {
-			foreach ($this as $key => $value)
-			{
+			foreach ($this as $key => $value) {
 				if (!empty($value) && $key != 'data_updating') {
-					$stmt = self::$connection->prepare("UPDATE users SET $key = ? WHERE id = '$user_id'");
+					$stmt = self::$connection->prepare("
+						UPDATE users
+						SET $key = ?
+						WHERE id = '$user_id'
+					");
 					$stmt->bind_param('s', $value);
 					$stmt->execute();
 				}
@@ -100,21 +103,27 @@ class Model_User extends Model
 			header("Location: profile");
 		}
 		else
-			return $error_message;
+			return $this->error_message;
 	}
 
 	public function editPswd($user_id)
 	{
-		$error_message['pswd'] = $this->validatePswd();
-		if (empty($error_message['pswd'])) {
+		$this->error_message['pswd'] = $this->validatePswd();
+		$successful_validate = $this->checkValidates();
+
+		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
-			$stmt = self::$connection->prepare("UPDATE users SET password = ? WHERE id = '$user_id'");
+			$stmt = self::$connection->prepare("
+				UPDATE users
+				SET password = ?
+				WHERE id = '$user_id'
+			");
 			$stmt->bind_param('s', $this->pswd_new);
 			$stmt->execute();
 			header("Location: profile");
 		}
 		else
-			return $error_message;
+			return $this->error_message;
 	}
 
 	// Проверка незанятости login и email во время редактиривания
@@ -126,7 +135,7 @@ class Model_User extends Model
 			WHERE id <> '$user_id' 
 				AND (login = '$this->login' 
 				OR email = '$this->email')
-			");
+		");
 		$stmt->execute();
 		$result_set = $stmt->get_result();
 		$row = $result_set->fetch_assoc();
@@ -137,11 +146,12 @@ class Model_User extends Model
 	public function verifyPswd()
 	{
 		$stmt = self::$connection->prepare("
-			SELECT id, role, password
+			SELECT users.id, role, password
 				AS 'hash'
 			FROM users
-			WHERE login = ?
-			");
+			NATURAL JOIN roles
+			WHERE users.login = ?
+		");
 		$stmt->bind_param('s', $this->login);
 		$stmt->execute();
 		$result_set = $stmt->get_result();
@@ -156,24 +166,32 @@ class Model_User extends Model
 			return false;
 	}
 
-	public function validateLogin($login)
+	public function validateLogin($existing_login)
 	{
-		if ($this->login == '')
+		if (empty($this->login))
 			return' Заполните поле логин';
 		elseif (preg_match('/\W/', $this->login))
 			return 'Логин может включать латинские буквы (a-z), цифры (0-9) и знак _';
-		elseif ($login == $this->login)
+		elseif ($existing_login == $this->login)
 			return 'Пользователь с таким логином уже существует!';
+		return '';
 	}
 
-	public function validateEmail($email)
+	public function validateEmail($existing_email)
 	{
-		if ($this->email == '')
+		if (empty($this->email))
 			return 'Заполните поле e-mail';
 		elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL))
 			return 'Неверная электронная почта!';
-		elseif ($email == $this->email)
+		elseif ($existing_email == $this->email)
 			return 'Пользователь с таким e-mail уже существует!';
+		return '';
+	}
+
+	public function validateRole()
+	{
+		if ($this->role < 1)
+			return 'Выберите роль';
 	}
 
 	public function validatePswd()

@@ -7,7 +7,7 @@ body{
 	background-color: #f5f5f5;
 }
 .container{
-	max-width: 1000px;
+	max-width: 1200px;
 	margin: 0 auto;
 	-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
@@ -57,12 +57,56 @@ header{
     text-decoration: none;
     color: #000;
 }
+.page_list{
+	height: 40px;
+	margin-top: 20px
+}
+.page_list a{
+	border-radius: 4px;
+	float: right;
+	color: #fff; /* цвет текста */
+ 	text-decoration: none; /* убирать подчёркивание у ссылок */
+  	user-select: none; /* убирать выделение текста */
+  	background: #202121; /* фон кнопки */
+  	padding: .7em 1.5em; /* отступ от текста */
+  	outline: none; /* убирать контур в Mozilla */
+} 
+.page_list a:hover { background: #494B4B; } /* при наведении курсора мышки */
+.page_list a:active { background: #2E3030; } /* при нажатии */
+/*begining of side bar*/
+.side_bar{
+	float: left;
+	background-color: white;
+	margin-top: 20px;
+	width: 250px;
+	border: 2px solid #e6e6e6;
+	padding-top: 10px;
+}
+.side_bar .row{
+	margin: 10px;
+}
+.side_bar a:hover{
+	margin: 10px 0 0 10px;
+}
+.side_bar a{
+	width: 190px;
+	text-decoration: none;
+	color: #000;
+	display: block;
+}
+.side_bar .line{
+	margin-top: 5px;
+	border: 0.5px solid #000;
+	width: 190px;
+}
 /*begining of content*/
 .main_content_block{
 	margin-top: 20px;
 	border: 2px solid #e6e6e6;
 	min-height: 800px;
 	background-color: #fff;
+	float: right;
+	width: 900px;
 }
 .header_of_content{
 	background-color: #e6e6e6;
@@ -82,6 +126,9 @@ header{
 .text_field{
 	/*height: 20px;*/
 }
+.error_message{
+	color: red;
+}
 footer{
 	margin-top: 40px;
 	width: 100%;
@@ -89,4 +136,26 @@ footer{
 	background-color: #3a3a3a;
 	color: #fff;
 	padding: 15px;
+}
+
+.news_list{
+	margin-top: 20px;
+}
+.news{
+	margin-bottom: 40px;
+	/*border: 1px solid #9ceaf0;*/
+}
+.news .title{
+	font-size: 24px;
+}
+.news .date{
+	margin: 10px 0;
+}
+
+.publishing_news .row{
+	margin-bottom: 20px;
+}
+.publishing_news label{
+	margin-bottom: 5px;
+	display: block;
 }

@@ -1,5 +1,5 @@
 <?php
-class Model_Search_User extends Model
+class ModelSearchUser extends Model
 {
 	public function search($desired_user_data)
 	{

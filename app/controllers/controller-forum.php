@@ -1,5 +1,5 @@
 <?php
-class Controller_Forum extends Controller
+class ControllerForum extends Controller
 {
 	public function action_index()
 	{
@@ -7,7 +7,7 @@ class Controller_Forum extends Controller
 		$this->own_view_path = 'forum-view.php';
 		// $this->styles = array();
 
-		$this->model = new Model_Forum;
+		$this->model = new ModelForum;
 		$this->setData();
 	}
 }

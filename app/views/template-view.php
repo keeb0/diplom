@@ -20,16 +20,14 @@
 <body>
 	<header>
 		<div class="container">
-			<span class="logo"><a href="/">Project</a></span>
+			<div class="logo"><a href="/">Project</a></div>
 			<div class="pin">
 				<?php 
 				if(isset($_SESSION['user_id']))
 				{
-					$user_login = $data['user']->login;
-					echo "<span class='button'>$user_login ▼</span>";
+					echo "<span class='button'>" . $data['user']->login . " ▼</span>";
 					echo '<div class="popover">
 							<a href="/profile" class="button">Профиль</a>
-							<a href="/search-user" class="button">Поиск пользователя</a>
 							<a href="/login/logout" class="button">Выход</a>
 						</div>';
 				}
@@ -37,25 +35,43 @@
 				{
 					echo '<a href="/login" class="button">Вход ▼</a>
 						<div class="popover">
-							<a href="/sign-up" class="button">Регистрация</a>
-							<a href="/search-user" class="button">Поиск пользователя</a>
+							<a href="/signup" class="button">Регистрация</a>
 						</div>';
 				}
 				?>
 			</div>
-			
 		</div>	
 	</header>
 	<div class="container">
-		<div class=" main_content_block">
-			<div class="header_of_content">
-				<?php echo $data['title']; ?>
+		<div class="document">
+			<?php
+			// Условия при котором кнопка создания новостей выводится только у Администратора
+	 		if (!empty($data['user']->role)) {
+	 			if ($data['user']->role == 'Администратор') {
+	 		?>
+			<div class="page_list">
+		 		<a href="/main/publish_news">Опубликовать новость</a>
+		 	</div>
+		 	<?php
+			}
+				}
+			?>
+		 	<?php
+				// Условие при котром side bar не выводится на страницах: Регистрация, Вход
+				if ($data['content_view'] != 'login-view.php' && $data['content_view'] != 'sign-up-view.php') {
+			 	 	require_once 'app/views/side-bar-view.php';
+				}
+				?>
+		 	<div class="main_content_block">
+				<div class="header_of_content">
+					<?php echo $data['title']; ?>
+				</div>
+				<div class="main_content">
+					<?php require_once 'app/views/'.$data['content_view'];?>
+				</div>
 			</div>
-			<div class="main_content">
-				<?php require_once 'app/views/'.$data['content_view'];?>
-			</div>
-		</div>
+	 	</div>
+		
 	</div>
-	
 </body>
 </html>

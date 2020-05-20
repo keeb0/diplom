@@ -20,19 +20,19 @@ class Controller
 		if (!empty($_SESSION))
 		{
 			switch ($_SESSION['role']) {
-				case 'admin':
+				case 'Администратор':
 					require_once self::USER_MODEL_DIR.'model-admin.php';
-					$this->user = new Model_Admin($_SESSION);
+					$this->user = new ModelAdmin($_SESSION);
 					break;
 				
-				case 'teacher':
+				case 'Преподаватель':
 					require_once self::USER_MODEL_DIR.'model-teacher.php';
-					$this->user = new Model_Teacher($_SESSION);
+					$this->user = new ModelTeacher($_SESSION);
 					break;
 
 				case 'Студент':
 					require_once self::USER_MODEL_DIR.'model-student.php';
-					$this->user = new Model_Student($_SESSION);
+					$this->user = new ModelStudent($_SESSION);
 					break;
 			}
 			$this->user->getData();

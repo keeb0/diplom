@@ -1,5 +1,5 @@
 <?php
-class Controller_Profile extends Controller
+class ControllerProfile extends Controller
 {
 	public $view_directory = 'profile/';
 
@@ -9,18 +9,18 @@ class Controller_Profile extends Controller
 
 		$this->scripts = array('script.js');
 		$this->styles = array('forms-profile.css');
+		$this->own_view_path = 'profile-view.php';
 	}
 
 	public function action_index()
 	{
 		$this->title = 'Личный кабинет';
-		$this->own_view_path = 'profile-edit-view.php';
 
 		if (!isset($_SESSION['user_id']))
 			$this->go_home();
 
 		// *********Блок кода с модулем аватарки пользователя*********
-		$user_avatar = new Model_User_Avatar($this->user);
+		$user_avatar = new ModelUserAvatar($this->user);
 		$user_avatar->getAvatar();
 
 		if (!empty($_FILES)) {
@@ -39,7 +39,7 @@ class Controller_Profile extends Controller
 				$user_avatar->remove();
 			}
 			else {
-				$user_editing = new Model_User($_POST);
+				$user_editing = new ModelUser($_POST);
 
 				if (isset($user_editing->login) || isset($user_editing->email))
 					$this->error_message = $user_editing->editData($this->user->user_id);
@@ -66,9 +66,8 @@ class Controller_Profile extends Controller
 
 	public function action_show_user()
 	{
-		$this->own_view_path = 'show-user-view.php';
 		if (isset($_GET['user_id'])) {
-			$this->desired_user = new Model_User($_GET);
+			$this->desired_user = new ModelUser($_GET);
 			$this->desired_user->getData();
 		}
 		else
@@ -76,7 +75,7 @@ class Controller_Profile extends Controller
 
 		$this->title = 'Профиль пользователя '.$this->desired_user->login;
 
-		$user_avatar = new Model_User_Avatar($this->desired_user);
+		$user_avatar = new ModelUserAvatar($this->desired_user);
 		$user_avatar->getAvatar();
 
 		$this->setData(

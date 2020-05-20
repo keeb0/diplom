@@ -1,5 +1,5 @@
 <?php
-class Model_User_Avatar extends Model_Image
+class ModelUserAvatar extends ModelImage
 {
 	public $path_change;
 	public $path_get;
@@ -35,7 +35,7 @@ class Model_User_Avatar extends Model_Image
 		// Задаем хэш имя аватарке
 		$this->temp_name = uniqid();
 
-		$success_upload = $this->upload_image($image_data, $this->temp_name, $this->path_change);
+		$success_upload = $this->uploadImage($image_data, $this->temp_name, $this->path_change);
 
 		if ($success_upload) {
 			// Запись нового имени аватара в БД

@@ -1,5 +1,5 @@
 <?php
-class Controller_Search_User extends Controller
+class ControllerSearchUser extends Controller
 {
 	public $matching_users;
 
@@ -9,7 +9,7 @@ class Controller_Search_User extends Controller
 		$this->own_view_path = 'search-user-view.php';
 		$this->styles[] = 'search-user.css';
 		
-		$searching_user = new Model_Search_User;
+		$searching_user = new ModelSearchUser;
 
 		if (isset($_POST['desired_user_login']))
 			$this->matching_users = $searching_user->search($_POST['desired_user_login']);
