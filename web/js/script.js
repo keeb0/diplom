@@ -1,12 +1,14 @@
-// var input_form = document.getElementById('login_user');
+var input_form = document.getElementById('login_user');
 
-// var test = {
-// 	login: input_form.login.value,
-// 	email: input_form.email.value,
-// 	firstName: input_form.firstName.value,
-// 	surname: input_form.surname.value,
-// 	patronymic: input_form.patronymic.value
-// }
+var test = {
+	login: input_form.login.value,
+	email: input_form.email.value,
+	firstName: input_form.firstName.value,
+	surname: input_form.surname.value,
+	patronymic: input_form.patronymic.value
+}
+console.log(test)
+// alert('dsa')
 
 function hide(id_hide, id, cancel_id, input_id2, input_id3)
 {
@@ -16,31 +18,31 @@ function hide(id_hide, id, cancel_id, input_id2, input_id3)
 	hiding.setAttribute('hidden', 'hidden');
 	detected.removeAttribute('hidden');
 
-	// if(cancel_id != '')
-	// {
-	// 	var input = document.getElementById(cancel_id);
+	if(cancel_id != '')
+	{
+		var input = document.getElementById(cancel_id);
 
-	// 	switch (cancel_id) {
-	// 		case 'login_user':
-	// 			input.value = test.login;
-	// 			break;
-	// 		case 'email_user':
-	// 			input.value = test.email;
-	// 			break;
-	// 		case 'pswdOld_user':
-	// 			input.value = '';
-	// 			break;
-	// 		default:
-	// 			alert('Ошибка!');
-	// 			break;
-	// 	}
-	// }
-	// if(input_id2 != '')
-	// {
-	// 	var input2 = document.getElementById(input_id2),
-	// 		input3 = document.getElementById(input_id3);
+		switch (cancel_id) {
+			case 'login_user':
+				input.value = test.login;
+				break;
+			case 'email_user':
+				input.value = test.email;
+				break;
+			case 'pswdOld_user':
+				input.value = '';
+				break;
+			default:
+				alert('Ошибка!');
+				break;
+		}
+	}
+	if(input_id2 != '')
+	{
+		var input2 = document.getElementById(input_id2),
+			input3 = document.getElementById(input_id3);
 
-	// 	input2.value = '';
-	// 	input3.value = '';
-	// }
+		input2.value = '';
+		input3.value = '';
+	}
 }

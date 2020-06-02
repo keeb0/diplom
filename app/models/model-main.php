@@ -2,29 +2,97 @@
 class ModelNews extends Model
 {
 	public $title;
-	public $facultyId;
-	public $departmentId;
+	public $faculty;
+	public $department;
 	public $text;
-	function __construct($form_data)
+	public $list;
+	public $page;
+
+	public $pervpage;
+	public $page1left;
+	public $page1right;
+	public $page2left;
+	public $page2right;
+	public $nextpage;
+
+	function __construct($form_data = null)
 	{
 		parent::__construct();
-		foreach ($form_data as $key => $value) {
-			$this->$key = $value;
+		if (!empty($form_data)) {
+			foreach ($form_data as $key => $value) {
+				$this->$key = $value;
+			}
 		}
 	}
 
-	public function select()
+	public function showNews($table, $page, $facultyId = 0, $departmentId = 0)
 	{
-		self::$connection->query("
+		$this->page = $page;
+		$amount = 2;
+		
+		// счет количества доступных новостей
+		$result = self::$connection->query("
+			SELECT COUNT(*)
+			FROM $table
+			WHERE facultyId = 0
+				OR (departmentId = 0 AND facultyId = $facultyId)
+				OR (departmentId = $departmentId AND facultyId = $facultyId)
+		");
+		$row = $result->fetch_assoc();
+		$news_amount = $row['COUNT(*)'];
+		$this->total_page = ceil($news_amount / $amount);
+
+		if ($this->page > $this->total_page) $this->page = $this->total_page;
+		if ($this->page < 1) $this->page = 1;
+		
+		$begining = $this->page * $amount - $amount;
+
+		// вывод доступных новостей на одну страницу
+		$stmt = self::$connection->prepare("
 			SELECT *
-			FROM news ");
+			FROM $table
+			WHERE facultyId = 0
+				OR (departmentId = 0 AND facultyId = $facultyId)
+				OR (departmentId = $departmentId AND facultyId = $facultyId)
+			ORDER BY id DESC
+			LIMIT $begining, $amount
+		");
+		$stmt->execute();
+		$result = $stmt->get_result();
+
+		for ($i = 0; $i < $result->num_rows; $i++)
+			$this->list[] = $result->fetch_assoc();
+	}
+
+	public function makePagination()
+	{
+		// Проверяем нужны ли стрелки назад
+		if ($this->page != 1) $this->pervpage = '<a href=?page=1><<</a><a href=?page='.($this->page - 1) .'><</a> ';
+		// Проверяем нужны ли стрелки вперед
+		if ($this->page != $this->total_page)
+			$this->nextpage = '<a href=?page='.($this->page + 1).'>></a><a href=?page='.$this->total_page.'>>></a>';
+
+		// Находим две ближайшие станицы с обоих краев, если они есть
+		if($this->page - 2 > 0)
+			$this->page2left = '<a href=?page='.($this->page - 2).'>'.($this->page - 2).'</a>';
+		if($this->page - 1 > 0)
+			$this->page1left = '<a href=?page='.($this->page - 1).'>'.($this->page - 1).'</a>';
+		if($this->page + 2 <= $this->total_page)
+			$this->page2right = '<a href=?page='.($this->page + 2).'>'.($this->page + 2).'</a>';
+		if($this->page + 1 <= $this->total_page)
+			$this->page1right = '<a href=?page='.($this->page + 1).'>'.($this->page + 1).'</a>';
+	}
+
+	public function selectNews($group, $groupId, $begining, $amount)
+	{
+		
 	}
 
 	public function publish()
 	{
 		$this->error_message['title'] = $this->verifyTitle();
-		$this->error_message['facultyId'] = $this->verifyFacultyId();
-		$this->error_message['departmentId'] = $this->verifyDepartmentId();
+		$this->error_message['faculty'] = $this->verifyFaculty();
+		$this->error_message['department'] = $this->verifyDepartment();
 		$this->error_message['text'] = $this->verifyText();
 
 		$successful_validate = $this->checkValidates();
@@ -34,9 +102,11 @@ class ModelNews extends Model
 				INSERT INTO 
 				news(title, text, facultyId, departmentId)
 				VALUES(?,?,?,?)
-				");
-			$stmt->bind_param('ssii',$this->title, $this->text, $this->facultyId, $this->departmentId);
+			");
+			$stmt->bind_param('ssii',$this->title, $this->text, $this->faculty, $this->department);
 			$stmt->execute();
+			setcookie('success_publish','true',time() + 3);
+			header("Location: publish_news");
 		}
 	}
 
@@ -45,14 +115,14 @@ class ModelNews extends Model
 		if (empty($this->title))
 			return 'Заполните поле название';
 	}
-	public function verifyFacultyId()
+	public function verifyFaculty()
 	{
-		if ($this->facultyId == -1)
+		if ($this->faculty == -1)
 			return 'Выберите факультет';
 	}
-	public function verifyDepartmentId()
+	public function verifyDepartment()
 	{
-		if ($this->departmentId == -1)
+		if ($this->department == -1)
 			return 'Выберите кафедру';
 	}
 	public function verifyText()
@@ -65,34 +135,33 @@ class ModelNews extends Model
 class ModelFaculty extends Model
 {
 	public $table;
-	function __construct()
+	public $list;
+	function __construct($table)
 	{
 		parent::__construct();
-		$this->table = 'faculties';
-	}
-	public function fill()
-	{
+		$this->table = $table;
+
 		$result = self::$connection->query("
-			SELECT id, name
+			SELECT *
 			FROM $this->table
-			");
+		");
 		$count = $result->num_rows;
 
 		// Дополнительные поля для формы
-		$rows[] = array('id' => -1, 'name' => 'пусто');
-		$rows[] = array('id' => 0, 'name' => 'Для всех');
+		$this->list[] = array('id' => -1, 'name' => 'пусто');
+		$this->list[] = array('id' => 0, 'name' => 'Для всех');
 		for ($i=0; $i < $count; $i++) { 
-			$rows[] = $result->fetch_assoc();
+			$this->list[] = $result->fetch_assoc();
 		}
 		$result->close();
-		return $rows;
+	}
+
+	public function fill()
+	{
+		
 	}
 }
 class ModelDepartment extends ModelFaculty
 {
-	function __construct()
-	{
-		parent::__construct();
-		$this->table = 'departments';
-	}
+
 }

@@ -6,8 +6,8 @@ class ModelUser extends Model
 	public $firstname;
 	public $surname;
 	public $patronymic;
-	public $department;
-	public $faculty;
+	public $departmentId;
+	public $facultyId;
 	public $email;
 	public $role;
 	public $avatar_name;
@@ -28,10 +28,10 @@ class ModelUser extends Model
 	public function getData()
 	{
 		$stmt = self::$connection->prepare("
-			SELECT login, email, avatar_name, role
-			FROM users
-			NATURAL JOIN roles
+			SELECT login, email, avatar_name, role, departmentId, facultyId
+			FROM users, roles
 			WHERE users.id = '$this->user_id'
+				AND roles.id = users.roleId
 		");
 		$stmt->execute();
 		$result_set = $stmt->get_result();
@@ -148,9 +148,9 @@ class ModelUser extends Model
 		$stmt = self::$connection->prepare("
 			SELECT users.id, role, password
 				AS 'hash'
-			FROM users
-			NATURAL JOIN roles
+			FROM users, roles
 			WHERE users.login = ?
+				AND users.roleId = roles.id
 		");
 		$stmt->bind_param('s', $this->login);
 		$stmt->execute();

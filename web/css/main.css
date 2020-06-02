@@ -57,13 +57,12 @@ header{
     text-decoration: none;
     color: #000;
 }
-.page_list{
-	height: 40px;
-	margin-top: 20px
+.admin_button{
+	margin-bottom: 30px;
 }
-.page_list a{
+.admin_button a{
+	min-width: 10px;
 	border-radius: 4px;
-	float: right;
 	color: #fff; /* цвет текста */
  	text-decoration: none; /* убирать подчёркивание у ссылок */
   	user-select: none; /* убирать выделение текста */
@@ -123,8 +122,12 @@ header{
 	background-color: #3289DF;
 	color: #fff;
 }
-.text_field{
-	/*height: 20px;*/
+
+.message{
+	font-size: 18px;
+	border-radius: 4px;
+	padding: 10px;
+	background: rgba(3, 252, 36, 0.3);
 }
 .error_message{
 	color: red;
@@ -152,6 +155,22 @@ footer{
 	margin: 10px 0;
 }
 
+.pagination a{
+	border-radius: 4px;
+	color: #A8A8A8; /* цвет текста */
+ 	text-decoration: none; /* убирать подчёркивание у ссылок */
+  	user-select: none; /* убирать выделение текста */
+  	padding: 4px; /* отступ от текста */
+  	margin-right: 10px;
+  	outline: none; /* убирать контур в Mozilla */
+}
+.pagination #currentPage{
+	color: #fff;
+	background: #0CC715;
+}
+.pagination a:hover{
+	background: #D4D4D4;
+}
 .publishing_news .row{
 	margin-bottom: 20px;
 }

@@ -6,7 +6,7 @@ class Model
 
 	public function __construct()
 	{
-		self::$connection = new mysqli('localhost', 'admin', '123456', 'chat');
+		self::$connection = new mysqli('localhost', 'admin', '123456', 'diplom');
 		self::$connection->query("SET NAMES 'utf8'");
 	}
 

@@ -2,14 +2,10 @@
 <html>
 <head>
 	<title><?php echo $data['title'];?></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/web/css/main.css">
 	<?php
-	if(!empty($data['scripts']))
-	{
-		foreach($data['scripts'] as $key => $value)
-			echo "<script src='web/js/".$value."'></script>";
-	}
+	
 	if(!empty($data['styles']))
 	{
 		foreach($data['styles'] as $key => $value)
@@ -44,23 +40,11 @@
 	</header>
 	<div class="container">
 		<div class="document">
-			<?php
-			// Условия при котором кнопка создания новостей выводится только у Администратора
-	 		if (!empty($data['user']->role)) {
-	 			if ($data['user']->role == 'Администратор') {
-	 		?>
-			<div class="page_list">
-		 		<a href="/main/publish_news">Опубликовать новость</a>
-		 	</div>
-		 	<?php
-			}
-				}
-			?>
 		 	<?php
 				// Условие при котром side bar не выводится на страницах: Регистрация, Вход
-				if ($data['content_view'] != 'login-view.php' && $data['content_view'] != 'sign-up-view.php') {
-			 	 	require_once 'app/views/side-bar-view.php';
-				}
+			if ($data['content_view'] != 'login-view.php' && $data['content_view'] != 'sign-up-view.php') {
+		 	 	require_once 'app/views/side-bar-view.php';
+			}
 				?>
 		 	<div class="main_content_block">
 				<div class="header_of_content">
@@ -72,6 +56,11 @@
 			</div>
 	 	</div>
 		
-	</div>
+	</div><?php 	if(!empty($data['scripts']))
+	{
+		foreach($data['scripts'] as $key => $value)
+			echo "<script src='web/js/".$value."'></script>";
+	} ?>
 </body>
+
 </html>
