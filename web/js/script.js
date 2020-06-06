@@ -1,16 +1,15 @@
-var input_form = document.getElementById('login_user');
+var input_form = document.getElementsByTagName('input');
 
 var test = {
 	login: input_form.login.value,
 	email: input_form.email.value,
-	firstName: input_form.firstName.value,
-	surname: input_form.surname.value,
-	patronymic: input_form.patronymic.value
+	// firstName: input_form.firstName.value,
+	// surname: input_form.surname.value,
+	// patronymic: input_form.patronymic.value
 }
-console.log(test)
-// alert('dsa')
+console.log(input_form.login_user)
 
-function hide(id_hide, id, cancel_id, input_id2, input_id3)
+function hide(id_hide, id, cancel_id = null, input_id2= 1, input_id3= null)
 {
 	var detected = document.getElementById(id),
 		hiding = document.getElementById(id_hide);
@@ -31,9 +30,6 @@ function hide(id_hide, id, cancel_id, input_id2, input_id3)
 				break;
 			case 'pswdOld_user':
 				input.value = '';
-				break;
-			default:
-				alert('Ошибка!');
 				break;
 		}
 	}

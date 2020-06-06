@@ -4,8 +4,8 @@
 	<title><?php echo $data['title'];?></title>
 	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/web/css/main.css">
+	<!-- <script src='/web/js/publishnews.js' defer=""></script> -->
 	<?php
-	
 	if(!empty($data['styles']))
 	{
 		foreach($data['styles'] as $key => $value)
@@ -56,11 +56,13 @@
 			</div>
 	 	</div>
 		
-	</div><?php 	if(!empty($data['scripts']))
-	{
+	</div>
+	<?php
+	if(!empty($data['scripts'])) {
 		foreach($data['scripts'] as $key => $value)
-			echo "<script src='web/js/".$value."'></script>";
-	} ?>
+			echo "<script src='/web/js/".$value."'></script>";
+	}
+	?>
 </body>
 
 </html>

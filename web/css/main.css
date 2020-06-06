@@ -93,7 +93,7 @@ header{
 	color: #000;
 	display: block;
 }
-.side_bar .line{
+.underline{
 	margin-top: 5px;
 	border: 0.5px solid #000;
 	width: 190px;
@@ -117,16 +117,22 @@ header{
 }
 .buttons{
 	border-radius: 5px;
-	border:1px solid #3289DF;
 	padding: 6px;
-	background-color: #3289DF;
-	color: #fff;
+	border:1px solid #FFE544;
+	background-color: #FFE544;
+	color: #000;
+	text-decoration: none;
+	user-select: none;
 }
-
+.buttons:hover{
+	background-color: #F8B202;
+}
 .message{
 	font-size: 18px;
 	border-radius: 4px;
 	padding: 10px;
+	width: 300px;
+	margin-bottom: 20px;
 	background: rgba(3, 252, 36, 0.3);
 }
 .error_message{
@@ -177,4 +183,13 @@ footer{
 .publishing_news label{
 	margin-bottom: 5px;
 	display: block;
+}
+
+.download a{
+	color: #fff;
+	/*text-decoration: none;*/
+}
+
+.subjects{
+	margin-bottom: 30px;
 }

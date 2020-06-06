@@ -90,12 +90,12 @@ class ModelNews extends Model
 
 	public function publish()
 	{
-		$error_message['title'] = $this->verifyTitle();
-		$error_message['faculty'] = $this->verifyFaculty();
-		$error_message['department'] = $this->verifyDepartment();
-		$error_message['text'] = $this->verifyText();
+		$this->error_message['title'] = $this->verifyTitle();
+		$this->error_message['faculty'] = $this->verifyFaculty();
+		$this->error_message['department'] = $this->verifyDepartment();
+		$this->error_message['text'] = $this->verifyText();
 
-		$successful_validate = $this->checkValidates($error_message);
+		$successful_validate = $this->checkValidates();
 
 		if ($successful_validate) {
 			$stmt = self::$connection->prepare("
@@ -108,8 +108,6 @@ class ModelNews extends Model
 			setcookie('success_publish','true',time() + 3);
 			header("Location: publish_news");
 		}
-		else
-			return $error_message;
 	}
 
 	public function verifyTitle()
@@ -132,30 +130,4 @@ class ModelNews extends Model
 		if (empty($this->text))
 			return 'Заполните поле текст';
 	}
-}
-
-class ModelTeacherList extends Model
-{
-	public $teachers;
-	public function getList($facultyId, $departmentId)
-	{
-		$result = self::$connection->query("
-			SELECT id, firstname, surname, patronymic
-			FROM users
-			WHERE facultyId = $facultyId
-				AND departmentId = $departmentId
-				AND roleId = 1
-				");
-		for ($i=0; $i < $result->num_rows; $i++) { 
-			$teachers[] = $result->fetch_assoc();
-		}
-		foreach ($teachers as $key => $value) {
-			$teachers[$key]['fullname'] = $value['surname'].' '.
-			mb_strcut($value['firstname'], 0, 2).'.'.
-			mb_strcut($value['patronymic'], 0, 2).'.';
-		}
-		// print_r($teachers);
-		$this->teachers = $teachers;
-	}
-	
 }

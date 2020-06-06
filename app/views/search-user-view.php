@@ -12,6 +12,7 @@
 
 			foreach ($data['matching_users'] as $value) {
 				print "<a class='row' href='/profile/show_user?user_id=".$value['id']."'>".$value['login']."</a>";
+				print '<div class="underline"></div>';
 			}
 		}
 		else

@@ -71,3 +71,23 @@ class ModelUserAvatar extends ModelImage
 		$stmt->execute();
 	}
 }
+
+class ModelShowDocs extends Model
+{
+	public function getSubjects($facultyId, $departmentId)
+	{
+		$stmt = self::$connection->prepare("
+			SELECT id, name
+			FROM subjects
+			WHERE facultyId = ? AND departmentId = ?
+		");
+		$stmt->bind_param('ii', $facultyId, $departmentId);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		for ($i=0; $i < $result->num_rows; $i++) { 
+			$rows[] = $result->fetch_assoc();
+		}
+// print_r($rows);
+		return $rows;
+	}
+}

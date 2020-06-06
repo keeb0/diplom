@@ -25,7 +25,11 @@ class ControllerForum extends Controller
 		$this->title = 'Создание секции';
 		$this->own_view_path = 'forum/create-section-view.php';
 
-		$this->setData();
+
+		$this->setData([
+			'faculties' => $this->faculty->list,
+			'departments' => $this->department->list
+		]);
 		$this->view->generate($this->data);
 	}
 }

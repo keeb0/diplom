@@ -1,23 +1,17 @@
 <?php
 class ControllerMain extends Controller
 {
-	public $faculty;
-	public $department;
-
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->faculty = new ModelFaculty('faculties');
-
-		$this->department = new ModelDepartment('departments');
+		$this->own_view_path = 'main/';
 	}
 
 	public function action_index()
 	{
 		$button = null;
 		$this->title = 'Главная';
-		$this->own_view_path = 'main/index-view.php';
+		$this->own_view_path .= 'index-view.php';
 		
 		if (empty($_GET['page']))
 			$page = 1;
@@ -63,16 +57,35 @@ class ControllerMain extends Controller
 				isset($_POST['faculty']) && isset($_POST['text'])) {
 
 				$news = new ModelNews($_POST);
-				$news->publish();
-				$this->error_message = $news->error_message;
+				$result = $news->publish();
+				$this->error_message = $result;
 			}
 		}
 
 		$this->title = 'Публикация новости';
-		$this->own_view_path = 'main/publish-news-view.php';
+		$this->own_view_path .= 'publish-news-view.php';
+		$this->scripts[] = 'publishnews.js';
 		$this->setData([
+			'error_message' => $this->error_message,
 			'faculties' => $this->faculty->list,
 			'departments' => $this->department->list
+		]);
+		$this->view->generate($this->data);
+	}
+
+	public function action_teacherList()
+	{
+		if ($this->user->role != 'Студент' OR !isset($this->user))
+			$this->go_home();
+
+		$test = new ModelTeacherList();
+		$test->getList($this->user->facultyId, $this->user->departmentId);
+
+		$this->styles[] = 'search-user.css';
+		$this->title = 'Преподавательский состав';
+		$this->own_view_path .= 'teacher-list-view.php';
+		$this->setData([
+			'teachers' => $test->teachers
 		]);
 		$this->view->generate($this->data);
 	}

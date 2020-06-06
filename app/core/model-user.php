@@ -47,27 +47,38 @@ class ModelUser extends Model
 	{
 		// Указан не корректный id -1 (пользователь еще не создан)
 		$existing_user = $this->getExistingUser(-1);
-		$this->error_message['login'] = $this->validateLogin($existing_user['login']);
-		$this->error_message['email'] = $this->validateEmail($existing_user['email']);
-		$this->error_message['role'] = $this->validateRole();
-		$this->error_message['pswd'] = $this->validatePswd();
+		$error_message['login'] = $this->validateLogin($existing_user['login']);
+		$error_message['email'] = $this->validateEmail($existing_user['email']);
+		$error_message['role'] = $this->validateRole();
+		$error_message['firstname'] = $this->validateFirstname();
+		$error_message['surname'] = $this->validateSurname();
+		$error_message['patronymic'] = $this->validatePatronymic();
+		$error_message['department'] = $this->validateDepartmentId();
+		$error_message['faculty'] = $this->validateFacultyId();
+		$error_message['pswd'] = $this->validatePswd();
+		print_r($this);
 
-		$successful_validate = $this->checkValidates();
+		$successful_validate = $this->checkValidates($error_message);
 		
 		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
 			$stmt = self::$connection->prepare("
-				INSERT INTO users (id, login, email, roleId, password) 
-				VALUES (NULL , ?, ?, ?, ?)
+				INSERT INTO users
+				VALUES (NULL , ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)
 			");
-			$stmt->bind_param('ssis', $this->login, $this->email, $this->role, $this->pswd_new);
+			$stmt->bind_param(
+				'sssssiiis', $this->login, $this->email,
+				$this->firstname, $this->surname, $this->patronymic,
+				$this->role, $this->facultyId, $this->departmentId,
+				$this->pswd_new
+				);
 			$stmt->execute();
 			$_SESSION['user_id'] = self::$connection->insert_id;
 
 			$result = self::$connection->query("
 				SELECT role
 				FROM roles
-				WHERE roleId = '$this->role'
+				WHERE id = '$this->role'
 			");
 			$row = $result->fetch_assoc();
 
@@ -76,17 +87,17 @@ class ModelUser extends Model
 			return true;
 		}
 		else
-			return $this->error_message;
+			return $error_message;
 	}
 
 	// Редактирование данных пользователем
 	public function editData($user_id)
 	{
 		$existing_user = $this->getExistingUser($user_id);
-		$this->error_message['login'] = $this->validateLogin($existing_user['login']);
-		$this->error_message['email'] = $this->validateEmail($existing_user['email']);
+		$error_message['login'] = $this->validateLogin($existing_user['login']);
+		$error_message['email'] = $this->validateEmail($existing_user['email']);
 
-		$successful_validate = $this->checkValidates();
+		$successful_validate = $this->checkValidates($error_message);
 	
 		if ($successful_validate) {
 			foreach ($this as $key => $value) {
@@ -103,13 +114,13 @@ class ModelUser extends Model
 			header("Location: profile");
 		}
 		else
-			return $this->error_message;
+			return $error_message;
 	}
 
 	public function editPswd($user_id)
 	{
-		$this->error_message['pswd'] = $this->validatePswd();
-		$successful_validate = $this->checkValidates();
+		$error_message['pswd'] = $this->validatePswd();
+		$successful_validate = $this->checkValidates($error_message);
 
 		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
@@ -123,7 +134,7 @@ class ModelUser extends Model
 			header("Location: profile");
 		}
 		else
-			return $this->error_message;
+			return $error_message;
 	}
 
 	// Проверка незанятости login и email во время редактиривания
@@ -166,6 +177,21 @@ class ModelUser extends Model
 			return false;
 	}
 
+	public function getTeacherDocs($user_id, $subjectId)
+	{
+		$docs_id = null;
+
+		$result = self::$connection->query("
+			SELECT *
+			FROM teacherdocs
+			WHERE userId = $user_id AND subjectId = $subjectId
+			");
+		for ($i=0; $i < $result->num_rows; $i++) { 
+			$docs_id[] = $result->fetch_assoc();
+		}
+		return $docs_id;
+	}
+
 	public function validateLogin($existing_login)
 	{
 		if (empty($this->login))
@@ -191,7 +217,33 @@ class ModelUser extends Model
 	public function validateRole()
 	{
 		if ($this->role < 1)
-			return 'Выберите роль';
+			return 'Укажите вашу роль в вузе';
+	}
+
+	public function validateFirstname()
+	{
+		if (empty($this->firstname))
+			return 'Введите ваше имя';
+	}
+	public function validateSurname()
+	{
+		if (empty($this->surname))
+			return 'Введите вашу фамилию';
+	}
+	public function validatePatronymic()
+	{
+		if (empty($this->patronymic))
+			return 'Введите ваше очество';
+	}
+	public function validateDepartmentId()
+	{
+		if ($this->departmentId < 1)
+			return 'Укажите вашу кафедру';
+	}
+	public function validateFacultyId()
+	{
+		if ($this->facultyId < 1)
+			return 'Укажите ваш факультет';
 	}
 
 	public function validatePswd()

@@ -11,21 +11,21 @@
 		<input class="field" type="text" name="firstname" id="firstnameId">
 	</div>
 	<div class="row error_message">
-		<?php print $data['error_message']['email'];?>
+		<?php print $data['error_message']['firstname'];?>
 	</div>
 	<div class="row">
 		<label for="surnameId">Фамилия:</label> 
 		<input class="field" type="text" name="surname" id="surnameId">
 	</div>
 	<div class="row error_message">
-		<?php print $data['error_message']['email'];?>
+		<?php print $data['error_message']['surname'];?>
 	</div>
 	<div class="row">
 		<label for="patronymicId">Очество:</label> 
 		<input class="field" type="text" name="patronymic" id="patronymicId">
 	</div>
 	<div class="row error_message">
-		<?php print $data['error_message']['email'];?>
+		<?php print $data['error_message']['patronymic'];?>
 	</div>
 	<div class="row">
 		<label for="emailId">e-mail:</label> 
@@ -47,25 +47,29 @@
 	</div>
 	<div class="row">
 		<label for="facultyId">Факультет</label> 
-		<select class="field" name="faculty" id="facultyId">
-			<option value="0">пусто</option>
-			<option value="1">Информационные технологии</option>
-			<option value="2"></option>
+		<select name="subjectId" onchange="setOption('facultyId', 'departmentId')" id="facultyId">
+			<?php
+			foreach ($data['faculties'] as $key => $value) {
+				if ($value['id'] != 0) {
+					echo "<option value=".$value['id'].">";
+						echo $value['name'];
+					echo "</option>";
+				}
+			}
+			?>
 		</select>
 	</div>
 	<div class="row error_message">
-		<?php print $data['error_message']['role'];?>
+		<?php print $data['error_message']['faculty'];?>
 	</div>
 	<div class="row">
-		<label for="departmentId">Кафедра</label> 
-		<select class="field" name="department" id="departmentId">
-			<option value="0">пусто</option>
-			<option value="1">Автоматическое управление</option>
-			<option value="2"></option>
+		<label>Кафедра</label>
+		<select name="department" id="departmentId">
+			<option>Выберите факультет</option>
 		</select>
 	</div>
 	<div class="row error_message">
-		<?php print $data['error_message']['role'];?>
+		<?php print $data['error_message']['department'];?>
 	</div>
 	<div class="row">
 		<label for="pswdId">Пароль:</label>
@@ -83,3 +87,69 @@
 		<input class="buttons" type="submit" value="Зарегистрироваться">
 	</div>
 </form>
+<?php
+echo "<div class='data' hidden id='departmentsId'>";
+foreach ($data['departments'] as $key => $value) {
+	if ($key == 1)
+		continue;
+	echo "<id>";
+		echo $value['id'];
+	echo "</id><name>";
+		echo $value['name'];
+	echo "</name><facultyId>";
+		echo $value['facultyId'];
+	echo "</facultyId>";
+}
+echo "</div>";
+
+echo "<div class='data2'  id='departmentsId'>";
+foreach ($data['groups'] as $key => $value) {
+	echo "<id>";
+		echo $value['id'];
+	echo "</id><name>";
+		echo $value['name'];
+	echo "</name><departmentId>";
+		echo $value['departmentId'];
+	echo "</departmentId>";
+}
+echo "</div>";
+?>
+<script type="text/javascript">
+	departments_amount = document.getElementById('departmentsId').getElementsByTagName('id').length
+	departments = new Array()
+	all_departments = document.getElementById('departmentsId')
+
+
+
+	for (i = 0; i < departments_amount; i++) {
+		departments.push({
+			'id': all_departments.getElementsByTagName('id')[i].innerHTML,
+			'name': all_departments.getElementsByTagName('name')[i].innerHTML,
+			'facultyId': all_departments.getElementsByTagName('facultyId')[i].innerHTML
+			})
+	}
+
+	function setOption(mainSelect, changedSelecet)
+	{
+		count = document.getElementById('changedSelecet').getElementsByTagName('id').length
+		facultyIndex = document.getElementById(mainSelect).options.selectedIndex
+		departmentObj = document.getElementById(changedSelecet)
+
+		departmentObj.length = 0
+
+		// if (facultyIndex != 0) {
+			if (facultyIndex == 0)
+				departmentObj[0] = new Option('Выберите факультет', -1)
+
+			else {
+				departmentObj[0] = new Option('пусто', -1)
+			
+				for (i = 0, j = 1; i < departments_amount; i++) {
+					if (facultyIndex == departments[i].facultyId) {
+						departmentObj[j] = new Option(departments[i].name, departments[i].id)
+						j++
+					}
+				}
+			}
+	}
+</script>

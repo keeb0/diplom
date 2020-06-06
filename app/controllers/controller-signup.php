@@ -27,8 +27,13 @@ class ControllerSignUp extends Controller
 			else
 				$this->error_message = $result;
 		}
-
-		$this->setData();
+		$this->model = new ModelSignUp;
+		$groups = $this->model->getGroups();
+		$this->setData([
+			'groups' => $groups,
+			'faculties' => $this->faculty->list,
+			'departments' => $this->department->list
+		]);
 		$this->view->generate($this->data);
 	}
 }

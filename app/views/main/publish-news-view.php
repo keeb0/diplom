@@ -1,3 +1,8 @@
+<?php
+if (isset($_COOKIE['success_publish']))
+	echo "<div class='message'>Новость успешно опубликована!</div>";
+else {
+?>
 <div class="publishing_news">
 	<form action="publish_news" method="post">
 		<div class="row">
@@ -41,9 +46,7 @@
 	</form>
 </div>
 <?php
-if (isset($_COOKIE['success_publish']))
-	echo "<span class='message'>Новость успешно опубликована!</span>";
-
+}
 echo "<div class='data' hidden id='departmentsId'>";
 foreach ($data['departments'] as $key => $value) {
 	echo "<id>";

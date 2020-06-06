@@ -2,11 +2,20 @@
 	padding: 30px;
 }
 .found_user_block .row{
+	/*border: 1px solid #e6e6e6;*/
+
+	/*background-color: #fff;*/
+}
+.found_user_block .row{
+	margin-right: 10px;
+
+	padding: 5px;
 	color: #000;
 	text-decoration: none;
 	display: block;
-	padding: 10px;
-	border: 1px solid #e6e6e6;
-	background-color: #fff;
+	width: 200px;
 	font-size: 18px;
+}
+.found_user_block .row:hover{
+	margin: 3px 0 0 3px;
 }

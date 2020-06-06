@@ -1,5 +1,5 @@
 .main_content{
-	padding: 30px 100px;
+	padding: 30px 50px;
 }
 .user_photo_block{
 	float: left;
@@ -43,16 +43,15 @@
 	border:1px solid #e6e6e6;
 }
 .buttons{
-	border-radius: 5px;
-	padding: 6px;
-	border:1px solid #FFE544;
-	background-color: #FFE544;
-	color: #000;
+	
 }
 .commit{
 	background-color: #3289DF;
 	border:1px solid #3289DF;
 	color: #fff;
+}
+.commit:hover{
+	background-color: #1C66B0;
 }
 .remove{
 	margin: 5px 0 0 30px;

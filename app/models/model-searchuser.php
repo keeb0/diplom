@@ -6,7 +6,7 @@ class ModelSearchUser extends Model
 		$desired_user_data .= '%';
 
 		$stmt = self::$connection->prepare("
-			SELECT login, id
+			SELECT login, id, avatar_name
 			FROM users
 			WHERE login LIKE ?");
 		$stmt->bind_param('s', $desired_user_data);

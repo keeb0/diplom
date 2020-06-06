@@ -83,7 +83,7 @@ if ($data['title'] == 'Личный кабинет') {
 
 	<div id="pswd_edit">
 		<div class="row">
-			Изменить пароль <button class="buttons"  onclick="hide('pswd_edit', 'pswd', '','', '')"> ✎ </button>
+			Изменить пароль <button class="buttons" onclick="hide('pswd_edit', 'pswd', '','', '')"> ✎ </button>
 		</div>
 	</div>
 	<div class="row error_message">
@@ -91,9 +91,19 @@ if ($data['title'] == 'Личный кабинет') {
 	</div>
 	
 	<div class="row">
-		<button  class="buttons commit" value="submit" form="pwsd_updating">Сохранить пароль</button>
+		<button  class="buttons commit" value="submit" form="pwsd_updating">
+			Сохранить пароль
+		</button>
 	</div>
-	
+	<?php
+	if ($data['user']->role == 'Преподаватель') {
+		echo '<div class="row">
+				<a class="buttons" href="profile/uploadDoc">
+					Загрузить методичку
+				</a>
+			</div>';
+	}
+	?>
 </div>
 <?php
 // Конец условия строки 2
@@ -122,6 +132,11 @@ if (!empty($data['desired_user']->login)) {
 			e-mail: <?php echo $data['desired_user']->email; ?>
 		</div>
 	</div>
+	<div class="row">
+		<?php echo $data['show_docs_button']; ?>
+	</div>
 </div>
 <?php
 }
+// else
+	// header('Location: /main');

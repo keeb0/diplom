@@ -11,14 +11,15 @@ class Controller
 	public $error_message = null;
 	public $styles = null;
 	public $scripts = null;
+	public $faculty;
+	public $department;
 
 	const USER_MODEL_DIR = 'app/models/user-models/';
 
 	public function __construct()
 	{
 		$this->view = new View;
-		if (!empty($_SESSION))
-		{
+		if (!empty($_SESSION['user_id'])) {
 			switch ($_SESSION['role']) {
 				case 'Администратор':
 					require_once self::USER_MODEL_DIR.'model-admin.php';
@@ -37,6 +38,13 @@ class Controller
 			}
 			$this->user->getData();
 		}
+		$this->faculty = new ModelSelectAllTable('faculties');
+		$this->faculty->setDefaultOptions();
+		$this->faculty->select();
+		
+		$this->department = new ModelSelectAllTable('departments');
+		$this->department->setDefaultOptions();
+		$this->department->select();	
 	}
 
 	public function setData($special_data = null)
