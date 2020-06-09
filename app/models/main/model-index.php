@@ -28,7 +28,7 @@ class ModelNews extends Model
 	public function showNews($table, $page, $facultyId = 0, $departmentId = 0)
 	{
 		$this->page = $page;
-		$amount = 2;
+		$amount = 3;
 		
 		// счет количества доступных новостей
 		$result = self::$connection->query("
@@ -62,6 +62,7 @@ class ModelNews extends Model
 
 		for ($i = 0; $i < $result->num_rows; $i++)
 			$this->list[] = $result->fetch_assoc();
+		print_r($this->list);
 	}
 
 	public function makePagination()

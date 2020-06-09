@@ -21,6 +21,6 @@ class ModelSearchUser extends Model
 		if(!empty($matching_users))
 			return $matching_users;
 
-		$this->error_message = 'Не найдено совпадений по вашему запросу';
+		$this->error_message['user'] = 'Не найдено совпадений по вашему запросу';
 	}
 }

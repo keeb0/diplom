@@ -5,18 +5,18 @@
 		</label>
 		<input class="buttons" type="submit" value="Поиск">
 	</form>
-	<div class="found_user_block">
+	<div class="found_template_block">
 		<?php 
-		if (!empty($data['matching_users'])) {
-			echo "Все найденные совпадения:";
+		if (isset($data['matching_users']) and !empty($data['matching_users'])) {
+			echo "<p>Все найденные совпадения:</p>";
 
 			foreach ($data['matching_users'] as $value) {
 				print "<a class='row' href='/profile/show_user?user_id=".$value['id']."'>".$value['login']."</a>";
 				print '<div class="underline"></div>';
 			}
 		}
-		else
-			print $data['error_message']
+		elseif (!empty($data['error_message']['user']))
+			print $data['error_message']['user'];
 		?>
 	</div>
 </div>

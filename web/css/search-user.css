@@ -1,21 +1,19 @@
-.found_user_block{
+.found_template_block{
 	padding: 30px;
 }
-.found_user_block .row{
-	/*border: 1px solid #e6e6e6;*/
-
-	/*background-color: #fff;*/
-}
-.found_user_block .row{
+.found_template_block .row{
 	margin-right: 10px;
 
 	padding: 5px;
 	color: #000;
 	text-decoration: none;
 	display: block;
-	width: 200px;
+	/*width: 200px;*/
 	font-size: 18px;
 }
-.found_user_block .row:hover{
-	margin: 3px 0 0 3px;
+.found_template_block .row:hover{
+	margin-bottom: 10px;
+}
+.subjects_block .underline{
+	width: 400px;
 }

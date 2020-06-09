@@ -11,6 +11,7 @@ class ModelTeacher extends ModelUser
 		$error_message['author'] =  $this->verifyAuthor($form_data[0]['author']);
 		$error_message['pages'] =  $this->verifyPages($form_data[0]['pages']);
 		$error_message['year'] =  $this->verifyYear($form_data[0]['year']);
+		$error_message['subjectId'] =  $this->verifysubject($form_data[0]['subjectId']);
 
 		$successful_validate = $this->checkValidates($error_message);
 		if ($successful_validate) {
@@ -83,5 +84,10 @@ class ModelTeacher extends ModelUser
 	{
 		if (empty($year))
 			return 'Введите год написания методички';
+	}
+	public function verifysubject($subjectId)
+	{
+		if ($subjectId < 1)
+			return 'Укажите предмет';
 	}
 }

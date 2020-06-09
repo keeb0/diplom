@@ -36,7 +36,7 @@
 	</div>
 	<div class="row">
 		<label for="roleId">Ваша роль в вузе</label> 
-		<select class="field" name="role" id="roleId">
+		<select class="field" name="role" id="roleId" onchange="changeVisibility('roleId', 'ID_group_block', 2)">
 			<option value="0">пусто</option>
 			<option value="1">Преподаватель</option>
 			<option value="2">Студент</option>
@@ -46,8 +46,8 @@
 		<?php print $data['error_message']['role'];?>
 	</div>
 	<div class="row">
-		<label for="facultyId">Факультет</label> 
-		<select name="subjectId" onchange="setOption('facultyId', 'departmentId')" id="facultyId">
+		<label for="ID_faculty">Факультет</label> 
+		<select name="faculty" onchange="setDepartmentsOption('ID_faculty', 'ID_department')" id="ID_faculty">
 			<?php
 			foreach ($data['faculties'] as $key => $value) {
 				if ($value['id'] != 0) {
@@ -64,8 +64,8 @@
 	</div>
 	<div class="row">
 		<label>Кафедра</label>
-		<select name="department" id="departmentId">
-			<option>Выберите факультет</option>
+		<select name="department" id="ID_department" onchange="setGroupsOption()">
+			<option>Укажите факультет</option>
 		</select>
 	</div>
 	<div class="row error_message">
@@ -83,12 +83,21 @@
 		<label for="pswdConfId">Подтвердите пароль:</label>
 		<input class="field" type="password" name="pswd_conf" id="pswdConfId">
 	</div>
+	<div class="row" id="ID_group_block" style="visibility: hidden;">
+		<label>Группа</label>
+		<select name="group" id="ID_group">
+			<option>Укажите группу</option>
+		</select>
+	</div>
+	<div class="row error_message">
+		<?php print $data['error_message']['group'];?>
+	</div>
 	<div class="row">
 		<input class="buttons" type="submit" value="Зарегистрироваться">
 	</div>
 </form>
 <?php
-echo "<div class='data' hidden id='departmentsId'>";
+echo "<div class='data' hidden id='ID_departments'>";
 foreach ($data['departments'] as $key => $value) {
 	if ($key == 1)
 		continue;
@@ -102,7 +111,7 @@ foreach ($data['departments'] as $key => $value) {
 }
 echo "</div>";
 
-echo "<div class='data2'  id='departmentsId'>";
+echo "<div class='data' hidden id='ID_groups'>";
 foreach ($data['groups'] as $key => $value) {
 	echo "<id>";
 		echo $value['id'];
@@ -115,11 +124,21 @@ foreach ($data['groups'] as $key => $value) {
 echo "</div>";
 ?>
 <script type="text/javascript">
-	departments_amount = document.getElementById('departmentsId').getElementsByTagName('id').length
 	departments = new Array()
-	all_departments = document.getElementById('departmentsId')
+	all_departments = document.getElementById('ID_departments')
+	departments_amount = all_departments.getElementsByTagName('id').length
 
+	groups = new Array()
+	all_groups = document.getElementById('ID_groups')
+	groups_amount = all_groups.getElementsByTagName('id').length
 
+	for (i = 0; i < groups_amount; i++) {
+		groups.push({
+			'id': all_groups.getElementsByTagName('id')[i].innerHTML,
+			'name': all_groups.getElementsByTagName('name')[i].innerHTML,
+			'departmentId': all_groups.getElementsByTagName('departmentId')[i].innerHTML
+			})
+	}
 
 	for (i = 0; i < departments_amount; i++) {
 		departments.push({
@@ -129,27 +148,53 @@ echo "</div>";
 			})
 	}
 
-	function setOption(mainSelect, changedSelecet)
+	function setDepartmentsOption(mainSelect, changedSelecet)
 	{
-		count = document.getElementById('changedSelecet').getElementsByTagName('id').length
 		facultyIndex = document.getElementById(mainSelect).options.selectedIndex
 		departmentObj = document.getElementById(changedSelecet)
 
 		departmentObj.length = 0
 
-		// if (facultyIndex != 0) {
-			if (facultyIndex == 0)
-				departmentObj[0] = new Option('Выберите факультет', -1)
+		if (facultyIndex == 0)
+			departmentObj[0] = new Option('Укажите факультет', -1)
 
-			else {
-				departmentObj[0] = new Option('пусто', -1)
-			
-				for (i = 0, j = 1; i < departments_amount; i++) {
-					if (facultyIndex == departments[i].facultyId) {
-						departmentObj[j] = new Option(departments[i].name, departments[i].id)
-						j++
-					}
+		else {
+			departmentObj[0] = new Option('пусто', -1)
+		
+			for (i = 0, j = 1; i < departments_amount; i++) {
+				if (facultyIndex == departments[i].facultyId) {
+					departmentObj[j] = new Option(departments[i].name, departments[i].id)
+					j++
 				}
 			}
+		}
 	}
+
+	function setGroupsOption()
+	{
+		departmentIndex = document.getElementById('ID_department').options.selectedIndex
+		groupObj = document.getElementById('ID_group')
+
+		groupObj.length = 0
+		groupObj[0] = new Option('Укажите группу', 0)
+	
+		for (i = 0, j = 1; i < groups_amount; i++) {
+			if (departmentIndex == groups[i].departmentId) {
+				groupObj[j] = new Option(groups[i].name, groups[i].id)
+				j++
+			}
+		}
+	}
+
+	function changeVisibility(mainObj, changedObj, index)
+	{
+		mainIndex = document.getElementById(mainObj).options.selectedIndex
+		changedObj = document.getElementById(changedObj)
+		
+		if (mainIndex == index) {
+			changedObj.style.visibility = 'visible';
+		}
+		else
+			changedObj.style.visibility = 'hidden';
+	}	
 </script>

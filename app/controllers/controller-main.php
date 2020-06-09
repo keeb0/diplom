@@ -62,6 +62,14 @@ class ControllerMain extends Controller
 			}
 		}
 
+		$this->faculty = new ModelSelectAllTable('faculties');
+		$this->faculty->setDefaultOptions('факультет', 1);
+		$this->faculty->select();
+		
+		$this->department = new ModelSelectAllTable('departments');
+		$this->department->setDefaultOptions('кафедру');
+		$this->department->select();
+
 		$this->title = 'Публикация новости';
 		$this->own_view_path .= 'publish-news-view.php';
 		$this->scripts[] = 'publishnews.js';

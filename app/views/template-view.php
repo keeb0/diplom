@@ -4,7 +4,6 @@
 	<title><?php echo $data['title'];?></title>
 	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/web/css/main.css">
-	<!-- <script src='/web/js/publishnews.js' defer=""></script> -->
 	<?php
 	if(!empty($data['styles']))
 	{
@@ -16,16 +15,21 @@
 <body>
 	<header>
 		<div class="container">
-			<div class="logo"><a href="/">Project</a></div>
+			<div class="logo">
+				<a href="/"><img src="/web/img/icons/logo.png">Project</a>
+			</div>
 			<div class="pin">
 				<?php 
 				if(isset($_SESSION['user_id']))
 				{
-					echo "<span class='button'>" . $data['user']->login . " ▼</span>";
+					echo "<a href=/profile class=button>".$data['user']->login."</a>";
 					echo '<div class="popover">
-							<a href="/profile" class="button">Профиль</a>
-							<a href="/login/logout" class="button">Выход</a>
-						</div>';
+							<a href=/subjects class=button>База знаний</a>';
+						
+					if (isset($data['user']) and $data['user']->role == 'Администратор')
+						echo "<a href=http://localhost:8080/status_historylist.php class=button>Управление БД</a>";
+					echo '<a href="/login/logout" class="button">Выход</a>';
+					echo "</div>";
 				}
 				else
 				{
@@ -42,7 +46,7 @@
 		<div class="document">
 		 	<?php
 				// Условие при котром side bar не выводится на страницах: Регистрация, Вход
-			if ($data['content_view'] != 'login-view.php' && $data['content_view'] != 'sign-up-view.php') {
+			if ($data['title'] != 'Вход' && $data['title'] != 'Регистрация') {
 		 	 	require_once 'app/views/side-bar-view.php';
 			}
 				?>

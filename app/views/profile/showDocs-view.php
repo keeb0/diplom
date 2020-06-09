@@ -21,7 +21,7 @@ if (!empty($data['documents'])) {
 		
 		// echo "</tr>";
 	foreach ($data['documents'] as $key => $value) {
-		echo '<div class="publishing_news">';
+		echo '<div class="template_form">';
 			echo "<div class='row'>";
 			echo "<div class='row'><b>".$value['title']."</b></div>";
 			echo "<div class='row'>Автор ".$value['author']."</div>";

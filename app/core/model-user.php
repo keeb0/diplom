@@ -14,21 +14,18 @@ class ModelUser extends Model
 	public $pswd;
 	public $pswd_new;
 	public $pswd_conf;
-
 	//Конструктор (присвоение свойствам класса элементы массива $user_info)
 	public function __construct($user_data)
 	{
 		parent::__construct();
-
 		foreach ($user_data as $key => $value)
 			$this->$key = $value;
 	}
-
 	// Передача данных по id для заполнения свойств объекта
 	public function getData()
 	{
 		$stmt = self::$connection->prepare("
-			SELECT login, email, avatar_name, role, departmentId, facultyId
+			SELECT *
 			FROM users, roles
 			WHERE users.id = '$this->user_id'
 				AND roles.id = users.roleId
@@ -37,11 +34,9 @@ class ModelUser extends Model
 		$result_set = $stmt->get_result();
 		$stmt->close();
 		$row = $result_set->fetch_array(MYSQLI_ASSOC);
-
 		foreach ($row as $key => $value)
 			$this->$key = $value;
 	}
-
 	// Запись нового пользователя
 	public function create()
 	{
@@ -56,32 +51,31 @@ class ModelUser extends Model
 		$error_message['department'] = $this->validateDepartmentId();
 		$error_message['faculty'] = $this->validateFacultyId();
 		$error_message['pswd'] = $this->validatePswd();
-		print_r($this);
-
+		if (!empty($this->role == 2))
+			$error_message['group'] = $this->validateGroup();
+		else
+			$error_message['group'] = null;
 		$successful_validate = $this->checkValidates($error_message);
-		
 		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
 			$stmt = self::$connection->prepare("
 				INSERT INTO users
-				VALUES (NULL , ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)
+				VALUES (NULL , ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)
 			");
 			$stmt->bind_param(
-				'sssssiiis', $this->login, $this->email,
+				'sssssiiisi', $this->login, $this->email,
 				$this->firstname, $this->surname, $this->patronymic,
-				$this->role, $this->facultyId, $this->departmentId,
-				$this->pswd_new
+				$this->role, $this->faculty, $this->department,
+				$this->pswd_new, $this->group
 				);
 			$stmt->execute();
 			$_SESSION['user_id'] = self::$connection->insert_id;
-
 			$result = self::$connection->query("
 				SELECT role
 				FROM roles
 				WHERE id = '$this->role'
 			");
 			$row = $result->fetch_assoc();
-
 			$_SESSION['role'] = $row['role'];
 			setcookie('checkIn', true, time() + 3);
 			return true;
@@ -89,16 +83,13 @@ class ModelUser extends Model
 		else
 			return $error_message;
 	}
-
 	// Редактирование данных пользователем
 	public function editData($user_id)
 	{
 		$existing_user = $this->getExistingUser($user_id);
 		$error_message['login'] = $this->validateLogin($existing_user['login']);
 		$error_message['email'] = $this->validateEmail($existing_user['email']);
-
 		$successful_validate = $this->checkValidates($error_message);
-	
 		if ($successful_validate) {
 			foreach ($this as $key => $value) {
 				if (!empty($value) && $key != 'data_updating') {
@@ -116,12 +107,10 @@ class ModelUser extends Model
 		else
 			return $error_message;
 	}
-
 	public function editPswd($user_id)
 	{
 		$error_message['pswd'] = $this->validatePswd();
 		$successful_validate = $this->checkValidates($error_message);
-
 		if ($successful_validate) {
 			$this->pswd_new = password_hash($this->pswd_new, PASSWORD_DEFAULT);
 			$stmt = self::$connection->prepare("
@@ -136,7 +125,6 @@ class ModelUser extends Model
 		else
 			return $error_message;
 	}
-
 	// Проверка незанятости login и email во время редактиривания
 	public function getExistingUser($user_id)
 	{
@@ -152,7 +140,6 @@ class ModelUser extends Model
 		$row = $result_set->fetch_assoc();
 		return $row;
 	}
-
 	// Проверка введных данных при входе
 	public function verifyPswd()
 	{
@@ -167,7 +154,6 @@ class ModelUser extends Model
 		$stmt->execute();
 		$result_set = $stmt->get_result();
 		$row = $result_set->fetch_assoc();
-
 		if (password_verify($this->pswd, $row['hash'])) 
 			return [
 				'id' => $row['id'],
@@ -176,7 +162,6 @@ class ModelUser extends Model
 		else
 			return false;
 	}
-
 	public function getTeacherDocs($user_id, $subjectId)
 	{
 		$docs_id = null;
@@ -191,7 +176,6 @@ class ModelUser extends Model
 		}
 		return $docs_id;
 	}
-
 	public function validateLogin($existing_login)
 	{
 		if (empty($this->login))
@@ -202,7 +186,6 @@ class ModelUser extends Model
 			return 'Пользователь с таким логином уже существует!';
 		return '';
 	}
-
 	public function validateEmail($existing_email)
 	{
 		if (empty($this->email))
@@ -213,13 +196,11 @@ class ModelUser extends Model
 			return 'Пользователь с таким e-mail уже существует!';
 		return '';
 	}
-
 	public function validateRole()
 	{
 		if ($this->role < 1)
 			return 'Укажите вашу роль в вузе';
 	}
-
 	public function validateFirstname()
 	{
 		if (empty($this->firstname))
@@ -237,22 +218,25 @@ class ModelUser extends Model
 	}
 	public function validateDepartmentId()
 	{
-		if ($this->departmentId < 1)
+		if ($this->department < 1)
 			return 'Укажите вашу кафедру';
 	}
 	public function validateFacultyId()
 	{
-		if ($this->facultyId < 1)
+		if ($this->faculty < 1)
 			return 'Укажите ваш факультет';
 	}
-
+	public function validateGroup()
+	{
+		if($this->group < 1)
+			return 'Укажите вашу группу';
+	}
 	public function validatePswd()
 	{
 		if (strlen($this->pswd_new) < 1)
 			return 'Введите новый пароль';
 		elseif (strlen($this->pswd_new) < 6)
 			return 'Пароль должен содержать не меньше 6 символов!';
-
 		// Код рабочий, временно отключен
 		// elseif(!(preg_match('/[a-z]/', $this->pswd_new) &&
 		// 	preg_match('/[A-Z]/', $this->pswd_new) &&

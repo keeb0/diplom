@@ -17,6 +17,7 @@ class ControllerSearchUser extends Controller
 		$this->error_message = $searching_user->error_message;
 
 		$this->setData([
+			'error_message' => $this->error_message,
 			'matching_users' => $this->matching_users]
 		);
 

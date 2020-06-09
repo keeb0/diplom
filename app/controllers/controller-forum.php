@@ -15,6 +15,7 @@ class ControllerForum extends Controller
 				</div>';
 
 		$this->model = new ModelForum;
+		$this->model->getSections();
 		$this->setData([
 			'admin_button' => $admin_button]);
 		$this->view->generate($this->data);
@@ -25,8 +26,13 @@ class ControllerForum extends Controller
 		$this->title = 'Создание секции';
 		$this->own_view_path = 'forum/create-section-view.php';
 
+		if (!empty($_POST)) {
+			$this->model = new ModelForum($_POST);
+			$this->error_message = $this->model->create();
+		}
 
 		$this->setData([
+			'error_message' => $this->error_message,
 			'faculties' => $this->faculty->list,
 			'departments' => $this->department->list
 		]);

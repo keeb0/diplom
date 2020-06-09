@@ -1,5 +1,5 @@
 <div class="main_content_space">
-	<div class="found_user_block">
+	<div class="found_template_block">
 		<?php 
 		if (!empty($data['teachers'])) {
 			foreach ($data['teachers'] as $value) {

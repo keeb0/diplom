@@ -7,7 +7,6 @@ var test = {
 	// surname: input_form.surname.value,
 	// patronymic: input_form.patronymic.value
 }
-console.log(input_form.login_user)
 
 function hide(id_hide, id, cancel_id = null, input_id2= 1, input_id3= null)
 {

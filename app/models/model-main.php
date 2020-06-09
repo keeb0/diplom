@@ -28,7 +28,7 @@ class ModelNews extends Model
 	public function showNews($table, $page, $facultyId = 0, $departmentId = 0)
 	{
 		$this->page = $page;
-		$amount = 2;
+		$amount = 4;
 		
 		// счет количества доступных новостей
 		$result = self::$connection->query("
@@ -120,12 +120,12 @@ class ModelNews extends Model
 	public function verifyFaculty()
 	{
 		if ($this->faculty == -1)
-			return 'Выберите факультет';
+			return 'Укажите факультет';
 	}
 	public function verifyDepartment()
 	{
 		if ($this->department == -1)
-			return 'Выберите кафедру';
+			return 'Укажите кафедру';
 	}
 	public function verifyText()
 	{

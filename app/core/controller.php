@@ -39,11 +39,11 @@ class Controller
 			$this->user->getData();
 		}
 		$this->faculty = new ModelSelectAllTable('faculties');
-		$this->faculty->setDefaultOptions();
+		$this->faculty->setDefaultOptions('факультет');
 		$this->faculty->select();
 		
 		$this->department = new ModelSelectAllTable('departments');
-		$this->department->setDefaultOptions();
+		$this->department->setDefaultOptions('кафедру');
 		$this->department->select();	
 	}
 
@@ -63,6 +63,12 @@ class Controller
 			foreach ($special_data as $key => $value)
 				$this->data[$key] = $value;
 		}
+	}
+
+	public function kickNoUser()
+	{
+		if (!isset($_SESSION['user_id']))
+			$this->go_home();
 	}
 
 	public function go_home()

@@ -1,4 +1,4 @@
-<div class="publishing_news">
+<div class="template_form">
 	<form action="uploadDoc" method="post" enctype="multipart/form-data">
 		<div class="row">
 			<label>Название методички</label>
@@ -29,6 +29,12 @@
 			<select id="subjects_option" name="subjectId">
 				<!-- <option value="">нет</option> -->
 			</select>
+		</div>
+		<div class="row error_message">
+			<?php
+			if (!empty($data['error_message']['subjectId']))
+				echo $data['error_message']['subjectId'];
+			?>
 		</div>
 		<div class="row">
 			<label>Краткое описание</label>

@@ -43,7 +43,13 @@
 	border:1px solid #e6e6e6;
 }
 .buttons{
-	
+	background-color: #FDB306;
+	border: 1px solid #FDB306;
+	color: #000;
+}
+.buttons:hover{
+	background: #DC6D04;
+	border: 1px solid #DC6D04;
 }
 .commit{
 	background-color: #3289DF;
@@ -52,11 +58,17 @@
 }
 .commit:hover{
 	background-color: #1C66B0;
+	border:1px solid #1C66B0;
 }
 .remove{
 	margin: 5px 0 0 30px;
 	background-color: #000;
+	border:1px solid #000;
 	color: #fff;
+}
+.remove:hover{
+	background-color: #494B4B;
+	border:1px solid #494B4B;
 }
 #error_message_avatar{
 	width: 300px;

@@ -38,10 +38,6 @@ if ($data['title'] == 'Личный кабинет') {
 			
 		</div>
 	</div>
-	<div class="row error_message">
-		<?php if(!empty($data['error_message']['login'])) echo $data['error_message']['login']; ?>
-	</div>
-
 	<div class="row">
 		<div id="email">
 			e-mail: <?php echo $data['user']->email; ?>
@@ -126,7 +122,22 @@ if (!empty($data['desired_user']->login)) {
 			Логин: <?php //echo $data['desired_user']->login; ?>
 		</div>
 	</div> -->
-
+	
+	<div class="row">
+		<div id="email">
+			Имя: <?php echo $data['desired_user']->firstname; ?>
+		</div>
+	</div>
+	<div class="row">
+		<div id="email">
+			Фамилия: <?php echo $data['desired_user']->surname; ?>
+		</div>
+	</div>
+	<div class="row">
+		<div id="email">
+			Очество: <?php echo $data['desired_user']->patronymic; ?>
+		</div>
+	</div>
 	<div class="row">
 		<div id="email">
 			e-mail: <?php echo $data['desired_user']->email; ?>

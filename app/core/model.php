@@ -2,10 +2,11 @@
 class Model
 {
 	static $connection;
-	public $error_message = null;
+	public $error_message;
 
 	public function __construct()
 	{
+		$this->error_message = array();
 		self::$connection = new mysqli('localhost', 'admin', '123456', 'diplom');
 		self::$connection->query("SET NAMES 'utf8'");
 	}
@@ -54,9 +55,10 @@ class ModelSelectAllTable extends Model
 		$result->close();
 	}
 
-	public function setDefaultOptions()
+	public function setDefaultOptions($default_option, $default_option2 = null)
 	{
-		$this->list[] = array('id' => -1, 'name' => 'пусто');
-		$this->list[] = array('id' => 0, 'name' => 'Для всех');
+		$this->list[] = array('id' => -1, 'name' => 'Укажите '.$default_option);
+		if ($default_option2)
+			$this->list[] = array('id' => 0, 'name' => 'Для всех');
 	}
 }

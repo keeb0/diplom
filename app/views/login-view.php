@@ -11,10 +11,10 @@
 	
 	<div class="row">
 		<input class="buttons" type="submit" name="submit" value="Войти">
-		<a href="sign-up">Регистрация</a>
+		<a href="signup">Регистрация</a>
 	</div>
 
-	<div class="row">
+	<div class="row error_message">
 		<?php !empty($data) ? print $data['error_message'] : ""; ?>
 	</div>
 </form>

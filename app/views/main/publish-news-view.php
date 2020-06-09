@@ -3,10 +3,10 @@ if (isset($_COOKIE['success_publish']))
 	echo "<div class='message'>Новость успешно опубликована!</div>";
 else {
 ?>
-<div class="publishing_news">
+<div class="template_form">
 	<form action="publish_news" method="post">
 		<div class="row">
-			<label>Название</label>
+			<label>Заголовок</label>
 			<input type="text" name="title">
 		</div>
 		<div class="row error_message">
@@ -41,7 +41,7 @@ else {
 			<?php if (!empty($data['error_message']['text'])) echo $data['error_message']['text']; ?>
 		</div>
 		<div class="row">
-			<input type="submit" value="Опубликовать">
+			<input type="submit" value="Опубликовать" class="buttons">
 		</div>
 	</form>
 </div>
